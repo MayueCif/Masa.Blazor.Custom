@@ -11,6 +11,9 @@ namespace Masa.Blazor.Custom.Shared.Presets
         public string Value { get; set; } = string.Empty;
 
         [Parameter]
+        public EventCallback<string> ValueChanged { get; set; }
+
+        [Parameter]
         public string? Class { get; set; }
 
         [Parameter]
@@ -22,13 +25,16 @@ namespace Masa.Blazor.Custom.Shared.Presets
         [Parameter]
         public RenderFragment<string>? ItemAppendContent { get; set; }
 
-        protected override void OnParametersSet()
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (Colors.Any())
+            if (firstRender)
             {
-                Value = Colors.First();
+                if (Colors.Any())
+                {
+                    await ValueChanged.InvokeAsync(Colors.First());
+                }
             }
-            base.OnParametersSet();
+            await base.OnAfterRenderAsync(firstRender);
         }
     }
 }
